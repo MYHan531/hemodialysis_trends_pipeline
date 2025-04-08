@@ -1,32 +1,44 @@
 # === IMPORT LIBRARIES ===
 import pandas as pd
-from sqlalchemy import create_engine
-import getpass
+import numpy as np
 import os
 
-# === Import Cleaned Data ===
-CLEANED_CSV_PATH = '../data/clean/kidney_disease_cleaned.csv'
+# === Load raw dataset & Set new output path ===
+INPUT_PATH = '../data/raw/kidney_disease.csv'
+OUTPUT_PATH = '../data/clean/kidney_disease_cleaned.csv'
 
-# === Load Cleaned Data ===
-df = pd.read_csv(CLEANED_CSV_PATH)
+# Create output directory if it doesn't exist
+os.makedirs(os.path.dirname(OUTPUT_PATH), exist_ok=True)
 
-# Prompt for connection details, requires pgAdmin
-db_user = input("Enter PostgreSQL username (default: postgres): ") or 'postgres'
-db_password = getpass.getpass("Enter PostgreSQL password: ")
-db_host = input("Enter host (default: localhost): ") or 'localhost'
-db_port = input("Enter port (default: 5432): ") or '5432'
-db_name = input("Enter database name (default: books_db): ") or 'books_db'
+# Read raw data
+df = pd.read_csv(INPUT_PATH)
 
-# Create a SQLAlchemy engine
-engine = create_engine(f'postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}')
+# Drop ID column (not useful for analysis)
+df.drop(columns=['id'], inplace=True)
 
-# Load to PostgreSQL table
-df.to_sql(
-    name='dialysis_cleaned',
-    con=engine,
-    if_exists='replace',
-    index=False,
-    method='multi'  # Speeds up insert
-)
+# Convert object-number columns to actual numeric types
+for col in ['pcv', 'wc', 'rc']:
+    df[col] = pd.to_numeric(df[col], errors='coerce')
 
-print("[SUCCESS] Cleaned dialysis data loaded into PostgreSQL table 'dialysis_cleaned'")
+# Clean yes/no or categorical columns
+binary_cols = ['htn', 'dm', 'cad', 'appet', 'pe', 'ane']
+df[binary_cols] = df[binary_cols].applymap(lambda x: 1 if str(x).strip().lower() == 'yes' else 0 if str(x).strip().lower() == 'no' else np.nan)
+
+# Convert 'classification' to binary (1 = CKD, 0 = Not CKD)
+df['classification'] = df['classification'].apply(lambda x: 1 if 'ckd' in str(x).lower() else 0)
+
+# Fill remaining numeric nulls with column medians
+for col in df.select_dtypes(include=[np.number]).columns:
+    df[col].fillna(df[col].median(), inplace=True)
+
+# Fill categorical nulls with mode
+for col in df.select_dtypes(include='object').columns:
+    df[col].fillna(df[col].mode()[0], inplace=True)
+
+# Create age bands
+# df['age_band'] = pd.cut(df['age'], bins=[0, 18, 35, 50, 65, 100], 
+#                         labels=['0-18', '19-35', '36-50', '51-65', '65+'])
+
+# Save cleaned dataset
+df.to_csv(OUTPUT_PATH, index=False)
+print(f"[SUCCESS] Cleaned data saved to: {OUTPUT_PATH}")
