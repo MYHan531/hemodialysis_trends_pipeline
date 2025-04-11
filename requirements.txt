@@ -1,0 +1,17 @@
+# Core Python dependencies
+pandas==2.2.1
+python-dotenv==1.0.1
+psycopg2-binary==2.9.9
+
+# Spark
+pyspark==3.5.1
+
+# SQLAlchemy for PostgreSQL writing
+SQLAlchemy==2.0.29
+
+# Airflow (core + PostgreSQL backend)
+apache-airflow[postgres]==2.8.1
+
+# Optional - Use if running in WSL or Linux and want Airflow UI working
+apache-airflow-providers-postgres==5.10.0
+apache-airflow-providers-fab==1.3.3  # OR match Airflow version constraints
