@@ -18,15 +18,24 @@ This project analyzes and tracks trends related to kidney disease and hemodialys
 
 hemodialysis_trends_pipeline/ 
 │ 
-├── dags/ # Airflow DAGs 
+├── dags/ # Airflow DAGs (unused as of now)
 │     └── dialysis_pipeline.py 
 │ 
 ├── data/ 
-│     ├── raw/ # Original CSV 
+│     ├── raw/ # Original CSV
+|     |     └── kidney_disease.csv # Original Dataset
+|     |
 │     └── clean/ # Cleaned output 
 │ 
-├── scripts/ 
-│      └── spark_transform.py # Data cleaning transformation 
-│ 
+├── scripts/
+│     |── logs/ # Log folder
+|     |     └── etl.log # Created by spark_transform.py
+│     |── spark_transform.py # Data cleaning transformation, loads into PostgresSQL (requires pgAdmin)
+|     |── load_to_db.py # Deprecated, replaced by spark_transform.py
+|     └── transform_data.py # Also deprecated, replaced by spark_transform.py
+│
+|── visualisations/
+|     └── Haemodialysis Patient Trends - CKD Dataset.pbix # Data Visualiser used to chart the cleaned data
+|  
 ├── requirements.txt 
 └── README.md
