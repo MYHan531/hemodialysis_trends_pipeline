@@ -128,6 +128,10 @@ column_renames = {
 }
 df_cleaned.rename(columns=column_renames, inplace=True)
 
+# if you need a new local copy, uncomment this segment
+# df_cleaned.to_csv(FINAL_CSV_PATH, index=False)
+# log(f"Renamed CSV saved to: {FINAL_CSV_PATH}")
+
 # Load to PostgreSQL
 log("Connecting to PostgreSQL database...")
 db_url = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
