@@ -12,7 +12,7 @@ default_args = {
 
 def run_etl_script():
     project_dir = os.getenv("PROJECT_DIR")
-    script_path = os.path.join(project_dir, "scripts/spark_transform.py")
+    script_path = os.path.join(project_dir, "spark_transform.py")
     subprocess.run(["python", script_path], check=True)
 
 with DAG(
