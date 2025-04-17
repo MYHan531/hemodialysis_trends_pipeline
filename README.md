@@ -24,15 +24,25 @@ hemodialysis_trends_pipeline/
 ├── data/ 
 │     ├── raw/ # Original CSV
 |     |     └── kidney_disease.csv # Original Dataset
-|     |
 │     └── clean/ # Cleaned output 
-│ 
+│
+├── models/
+│     ├── anemia_scaler.joblib
+|     ├── anemia_xgboost_model.joblib
+│     ├── appetite_model.joblib
+|     ├── appetite_scaler.joblib
+│     ├── ckd_logistic_model.joblib
+|     └── ckd_scaler.joblib
+|
+├── notebooks/
+│     ├── predict_anemia_xgboost.ipynb
+|     ├── predict_appetite_model.ipynb
+│     └── predict_hypertension_model.ipynb
+| 
 ├── scripts/
-│     |── logs/ # Log folder
-|     |     └── etl.log # Created by spark_transform.py
-│     |── spark_transform.py # Data cleaning transformation, loads into PostgresSQL (requires pgAdmin)
-|     |── load_to_db.py # Deprecated, replaced by spark_transform.py
-|     └── transform_data.py # Also deprecated, replaced by spark_transform.py
+│     |── logs/
+|     |     └── etl.log
+│     └──  spark_transform.py # Data cleaning transformation, loads into PostgresSQL (requires pgAdmin)
 │
 |── visualisations/
 |     └── Haemodialysis Patient Trends - CKD Dataset.pbix # Data Visualiser used to chart the cleaned data
