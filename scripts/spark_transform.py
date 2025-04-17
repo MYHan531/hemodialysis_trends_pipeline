@@ -1,3 +1,17 @@
+def install_if_missing(package, import_name=None):
+    try:
+        __import__(import_name or package)
+    except ImportError:
+        import subprocess
+        import sys
+        print(f"📦 Installing missing package: {package}")
+        subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+
+install_if_missing("pandas")
+install_if_missing("pyspark", "pyspark")
+install_if_missing("sqlalchemy")
+install_if_missing("python-dotenv", "dotenv")
+
 import os
 import glob
 import shutil

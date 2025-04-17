@@ -1,0 +1,47 @@
+In WSL
+
+# Step 1: Create project directory and virtualenv
+cd ~/HEMODIALYSIS_TRENDS_PIPELINE
+source airflow_env/venv/bin/activate
+
+# Step 2: Install Airflow (recommended constraint-based install)
+AIRFLOW_VERSION=2.8.1
+PYTHON_VERSION="$(python --version | cut -d " " -f 2 | cut -d "." -f 1,2)"
+CONSTRAINT_URL="https://raw.githubusercontent.com/apache/airflow/constraints-${AIRFLOW_VERSION}/constraints-${PYTHON_VERSION}.txt"
+
+pip install "apache-airflow[postgres,celery]==${AIRFLOW_VERSION}" --constraint "${CONSTRAINT_URL}"
+
+# Step 3: check IP address
+ip route | grep default
+default via xxx.xxx.xxx.xxx dev eth0 proto kernel
+
+# Step 4: Set Airflow connection string
+export AIRFLOW_HOME=~/airflow
+export AIRFLOW__DATABASE__SQL_ALCHEMY_CONN="postgresql+psycopg2://<postgreSQL_username>:<your_password>@xxx.xxx.xxx.xxx:5432/airflow"
+
+# Step 5: double confirm Windows host IP to enter Airflow
+psql -h xxx.xxx.xxx.xxx -U postgres -d airflow
+Password for user <user>: <your_password>
+
+# Step 6: Set the Airflow Connection String in WSL
+export AIRFLOW__DATABASE__SQL_ALCHEMY_CONN="postgresql+psycopg2://<postgreSQL_username>:<your_password>@xxx.xxx.xxx.xxx:<port_number>/airflow"
+
+Initialize the Airflow Metadata Database:
+airflow db migrate
+
+Create the Admin User
+airflow users create \
+  --username admin \
+  --firstname Admin \
+  --lastname User \
+  --role Admin \
+  --email admin@example.com \
+  --password admin
+
+## Create a second WSL environment (make sure both are in venv by doing Step 1) ##
+
+First terminal run:
+airflow scheduler
+
+Second (new) terminal run:
+airflow webserver --port 8080

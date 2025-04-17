@@ -1,4 +1,20 @@
-.env
-airflow_venv/
-.venv/
+# .gitignore
+
+# Virtual environment
+airflow_env/
 venv/
+
+# Airflow logs and DB
+airflow/logs/
+airflow/airflow.db
+airflow/unittests.cfg
+
+# Jupyter/IPython checkpoints
+**/.ipynb_checkpoints/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Environment file (optional, only if secrets inside)
+.env
