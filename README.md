@@ -98,7 +98,7 @@ export AIRFLOW__DATABASE__SQL_ALCHEMY_CONN="postgresql+psycopg2://your_username:
 ### Step 5: Initialise the Airflow metadata database
 
 ```bash
-airflow db init
+airflow db init # or airflow db migrate
 ```
 
 ### Step 6: Create an Airflow admin user
