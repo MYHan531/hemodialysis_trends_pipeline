@@ -3,6 +3,7 @@ from airflow.operators.python import PythonOperator
 from datetime import datetime
 import subprocess
 import os
+import logging
 
 default_args = {
     "owner": "airflow",
@@ -12,7 +13,16 @@ default_args = {
 
 def run_etl_script():
     project_dir = os.getenv("PROJECT_DIR")
-    script_path = os.path.join(project_dir, "spark_transform.py")
+
+    if not project_dir:
+        raise EnvironmentError("❌ PROJECT_DIR environment variable not set.")
+
+    script_path = os.path.join(project_dir, "scripts", "spark_transform.py")
+
+    if not os.path.isfile(script_path):
+        raise FileNotFoundError(f"❌ ETL script not found at: {script_path}")
+
+    logging.info(f"✅ Running ETL script: {script_path}")
     subprocess.run(["python", script_path], check=True)
 
 with DAG(

@@ -122,6 +122,10 @@ airflow scheduler
 
 Then head over to: [http://localhost:8080](http://localhost:8080)
 
+to exit env/venv mode, on Windows command prompt & Linux run:
+```bash
+deactivate
+```
 ---
 
 ## 💡 What This Project Does

@@ -11,6 +11,7 @@ install_if_missing("pandas")
 install_if_missing("pyspark", "pyspark")
 install_if_missing("sqlalchemy")
 install_if_missing("python-dotenv", "dotenv")
+install_if_missing("psycopg2-binary", "psycopg2")
 
 import os
 import glob
@@ -20,6 +21,7 @@ from datetime import datetime
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, when
 from sqlalchemy import create_engine
+from sqlalchemy.engine import Engine
 from dotenv import load_dotenv
 
 # Logging setup
@@ -48,7 +50,7 @@ DB_TABLE = "dialysis_cleaned"
 
 # Resolve paths
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-RAW_DATA_PATH = os.path.join(BASE_DIR, "../data/raw/kidney_disease.csv")
+RAW_DATA_PATH = os.path.join(BASE_DIR, "../data/raw/kidney_disease2.csv")
 TMP_OUTPUT_DIR = os.path.join(BASE_DIR, "../data/clean/tmp_csv")
 FINAL_CSV_PATH = os.path.join(BASE_DIR, "../data/clean/kidney_disease_cleaned.csv")
 
@@ -143,13 +145,19 @@ column_renames = {
 df_cleaned.rename(columns=column_renames, inplace=True)
 
 # if you need a new local copy, uncomment this segment
-# df_cleaned.to_csv(FINAL_CSV_PATH, index=False)
-# log(f"Renamed CSV saved to: {FINAL_CSV_PATH}")
+df_cleaned.to_csv(FINAL_CSV_PATH, index=False)
+log(f"Renamed CSV saved to: {FINAL_CSV_PATH}")
 
 # Load to PostgreSQL
 log("Connecting to PostgreSQL database...")
-db_url = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+db_url = f"postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 engine = create_engine(db_url)
+
+log(f"Type of engine: {type(engine)}")
+log(f"SQLAlchemy engine: {engine}")
+
+if not isinstance(engine, Engine):
+    raise TypeError("engine is not a valid SQLAlchemy Engine")
 
 log(f"Uploading data to PostgreSQL table '{DB_TABLE}'...")
 df_cleaned.to_sql(DB_TABLE, engine, if_exists="replace", index=False, method="multi")
