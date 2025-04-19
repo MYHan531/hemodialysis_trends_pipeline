@@ -1,1 +1,0 @@
-ERROR: You need to upgrade the database. Please run `airflow db upgrade`. Make sure the command is run using Airflow version 2.8.1.

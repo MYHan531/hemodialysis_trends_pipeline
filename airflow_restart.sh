@@ -1,5 +1,25 @@
 #!/bin/bash
 
+# Check & install system deps
+check_and_install() {
+  PACKAGE=$1
+  FRIENDLY_NAME=$2
+  if ! command -v "$PACKAGE" &> /dev/null; then
+    echo "📦 '$FRIENDLY_NAME' not found. Installing..."
+    sudo apt update && sudo apt install -y "$PACKAGE"
+  else
+    echo "✅ '$FRIENDLY_NAME' already installed."
+  fi
+}
+
+echo "🔍 Checking required system packages..."
+
+check_and_install curl "curl"
+check_and_install lsof "lsof"
+check_and_install netstat "net-tools"   # netstat comes from net-tools
+check_and_install psql "PostgreSQL Client"
+check_and_install gunicorn "gunicorn"
+
 # --- CONFIGURATION ---
 VENV_PATH="airflow_env/venv/bin/activate"
 ENV_FILE=".env"
@@ -52,11 +72,18 @@ chmod -R 755 "$LOG_DIR"
 # Start airflow webserver and airflow scheduler plus logging
 echo "🚦 Starting Airflow webserver..."
 nohup airflow webserver --port $AIRFLOW_PORT > "$WEB_LOG" 2>&1 &
-sleep 5
 
-if netstat -tuln | grep ":$AIRFLOW_PORT" > /dev/null; then
-    echo "✅ Webserver is running on port $AIRFLOW_PORT"
-else
+echo "⏳ Waiting for webserver to be available on port $AIRFLOW_PORT..."
+
+for i in {1..100}; do
+    if ss -tuln | grep ":$AIRFLOW_PORT" > /dev/null; then
+        echo "✅ Webserver is running on port $AIRFLOW_PORT"
+        break
+    fi
+    sleep 1
+done
+
+if ! ss -tuln | grep ":$AIRFLOW_PORT" > /dev/null; then
     echo "❌ Webserver failed to start. Check $WEB_LOG for details"
     exit 1
 fi
