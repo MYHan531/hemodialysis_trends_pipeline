@@ -8,6 +8,7 @@ venv/
 airflow/logs/
 airflow/airflow.db
 airflow/unittests.cfg
+logs/webserver.log
 
 # Jupyter/IPython checkpoints
 **/.ipynb_checkpoints/
@@ -18,3 +19,4 @@ Thumbs.db
 
 # Environment file (optional, only if secrets inside)
 .env
+
