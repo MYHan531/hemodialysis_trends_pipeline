@@ -48,7 +48,8 @@ hemodialysis_trends_pipeline/
 │
 ├── visualisations/               # Power BI dashboard assets
 │   └── Haemodialysis Patient Trends - CKD Dataset.pbix
-│
+|
+├── airflow_restart.sh            # setup and start airflow webserver and scheduler
 ├── requirements.txt              # Python dependencies
 └── README.md                     # You’re reading it
 ```
