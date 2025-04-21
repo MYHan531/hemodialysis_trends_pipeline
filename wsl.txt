@@ -45,3 +45,6 @@ airflow scheduler
 
 Second (new) terminal run:
 airflow webserver --port 8080
+
+or alternatively in one terminal (not recommended): 
+airflow webserver --port 8080 & airflow scheduler
