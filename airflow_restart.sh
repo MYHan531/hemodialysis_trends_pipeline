@@ -36,7 +36,7 @@ check_and_install_system psql "PostgreSQL Client"
 check_and_install_system gunicorn "gunicorn"
 
 echo "🔍 Checking required Python packages..."
-check_and_install_python psycopg2_binary "psycopg2"
+check_and_install_python psycopg2 "psycopg2-binary"
 check_and_install_python pyspark "pyspark"
 check_and_install_python sqlalchemy "sqlalchemy"
 

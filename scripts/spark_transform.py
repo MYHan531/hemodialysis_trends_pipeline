@@ -38,7 +38,8 @@ def log(message):
         f.write(full_message + "\n")
 
 # Load environment variables from .env
-load_dotenv()
+dotenv_path = os.path.join(os.path.dirname(__file__), '..', '.env')
+load_dotenv(dotenv_path)
 
 # PostgreSQL credentials
 DB_USER = os.getenv("DB_USER")
