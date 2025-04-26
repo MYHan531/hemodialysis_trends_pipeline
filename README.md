@@ -11,6 +11,7 @@ This project explores and monitors patterns in kidney disease and haemodialysis 
 - **PostgreSQL** – backend storage for processed data
 - **Apache Airflow** – orchestrates and schedules the ETL and modelling workflows (requires WSL or Docker; avoid Windows CMD)
 - **Power BI** – for rich, interactive data visualisation
+- **Shell Scripting** - to automate the environment setup
 - **Docker (future)** – planned containerisation once revisited
 
 ---
@@ -51,7 +52,7 @@ hemodialysis_trends_pipeline/
 |
 ├── airflow_restart.sh            # setup and start airflow webserver and scheduler
 ├── requirements.txt              # Python dependencies
-└── README.md                     # You’re reading it
+└── README.md                     # You’re here!
 ```
 
 ---
@@ -99,7 +100,7 @@ export AIRFLOW__DATABASE__SQL_ALCHEMY_CONN="postgresql+psycopg2://your_username:
 ### Step 5: Initialise the Airflow metadata database
 
 ```bash
-airflow db init # or airflow db migrate
+airflow db migrate # or ./airflow_restart.sh 
 ```
 
 ### Step 6: Create an Airflow admin user
@@ -117,8 +118,7 @@ airflow users create \
 ### Step 7: Run the webserver and scheduler
 
 ```bash
-airflow webserver --port 8080 &
-airflow scheduler
+airflow webserver --port 8080 & airflow scheduler & wait
 ```
 
 Then head over to: [http://localhost:8080](http://localhost:8080)
@@ -133,11 +133,9 @@ deactivate
 
 - Automates the ETL process using Spark and Airflow
 - Cleans and structures medical data from CSV to PostgreSQL
-- Trains models to predict:  
-  ✔ Anaemia  
-  ✔ Appetite levels  
-  ✔ Hypertension  
+- Automates ETL execution via Airflow
 - Exports the results to CSV for visualisation
+- Predicts health outcomes (anaemia, appetite loss, hypertension) using ML models
 
 ---
 
