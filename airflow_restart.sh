@@ -4,25 +4,41 @@
 # Airflow Restart Script (WSL-only)
 # -------------------------------
 
-# Check & install system deps
-check_and_install() {
+# --- System Packages Checker ---
+check_and_install_system() {
   PACKAGE=$1
   FRIENDLY_NAME=$2
   if ! command -v "$PACKAGE" &> /dev/null; then
-    echo "📦 '$FRIENDLY_NAME' not found. Installing..."
+    echo "📦 '$FRIENDLY_NAME' not found. Installing via apt..."
     sudo apt update && sudo apt install -y "$PACKAGE"
   else
     echo "✅ '$FRIENDLY_NAME' already installed."
   fi
 }
 
+# --- Python Packages Checker ---
+check_and_install_python() {
+  PACKAGE=$1
+  FRIENDLY_NAME=$2
+  if ! python3 -c "import $PACKAGE" &> /dev/null; then
+    echo "📦 Python package '$FRIENDLY_NAME' not found. Installing via pip..."
+    pip install "$PACKAGE"
+  else
+    echo "✅ Python package '$FRIENDLY_NAME' already installed."
+  fi
+}
+
 echo "🔍 Checking required system packages..."
-check_and_install psycopg2 "psycopg2"
-check_and_install curl "curl"
-check_and_install lsof "lsof"
-check_and_install netstat "net-tools"   # netstat comes from net-tools
-check_and_install psql "PostgreSQL Client"
-check_and_install gunicorn "gunicorn"
+check_and_install_system curl "curl"
+check_and_install_system lsof "lsof"
+check_and_install_system netstat "net-tools"   # netstat comes from net-tools
+check_and_install_system psql "PostgreSQL Client"
+check_and_install_system gunicorn "gunicorn"
+
+echo "🔍 Checking required Python packages..."
+check_and_install_python psycopg2_binary "psycopg2"
+check_and_install_python pyspark "pyspark"
+check_and_install_python sqlalchemy "sqlalchemy"
 
 # --- CONFIGURATION ---
 VENV_PATH="airflow_env/venv/bin/activate"
@@ -30,7 +46,7 @@ ENV_FILE=".env"
 AIRFLOW_PORT=8080
 SCHEDULER_PORT=8793
 
-# current directory
+# --- current directory ---
 AIRFLOW_DIR="$(cd "$(dirname "$0")" && pwd)"
 export DAG_DIR="${AIRFLOW_DIR}/dags"
 export LOG_DIR="${AIRFLOW_DIR}/airflow/logs"
@@ -45,7 +61,7 @@ echo "Airflow directory = $AIRFLOW_DIR"
 echo "DAG folder directory = $DAG_DIR"
 echo "🚀 Restarting Airflow environment safely..."
 
-# Activate virtualenv
+# --- Activate virtualenv ---
 print_section "Activating virtual environment"
 if [ -f "$VENV_PATH" ]; then
   source "$VENV_PATH"
@@ -55,7 +71,7 @@ else
   exit 1
 fi
 
-# Load the environment variables
+# --- Load the environment variables ---
 print_section "Loading environment variables"
 if [ -f "$ENV_FILE" ]; then
   set -o allexport
