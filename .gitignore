@@ -4,6 +4,7 @@ airflow_env/
 logs/
 *.db
 *.log
+*.cfg
 
 # Ignore Python cache
 __pycache__/
