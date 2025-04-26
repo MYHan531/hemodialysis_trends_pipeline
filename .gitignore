@@ -5,6 +5,7 @@ airflow_env/
 venv/
 
 # Airflow logs and DB
+airflow
 airflow/logs/
 airflow/airflow.db
 airflow/unittests.cfg

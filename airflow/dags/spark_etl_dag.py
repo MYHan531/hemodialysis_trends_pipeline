@@ -1,9 +1,11 @@
 from airflow import DAG
+from airflow.models import Variable
 from airflow.operators.python import PythonOperator
 from datetime import datetime
 import subprocess
 import os
 import logging
+import sys
 
 default_args = {
     "owner": "airflow",
@@ -12,10 +14,10 @@ default_args = {
 }
 
 def run_etl_script():
-    project_dir = os.getenv("PROJECT_DIR")
+    project_dir = Variable.get("PROJECT_DIR")
 
     if not project_dir:
-        raise EnvironmentError("❌ PROJECT_DIR environment variable not set.")
+        raise EnvironmentError("❌ PROJECT_DIR Airflow Variable not set.")
 
     script_path = os.path.join(project_dir, "scripts", "spark_transform.py")
 
@@ -23,7 +25,7 @@ def run_etl_script():
         raise FileNotFoundError(f"❌ ETL script not found at: {script_path}")
 
     logging.info(f"✅ Running ETL script: {script_path}")
-    subprocess.run(["python", script_path], check=True)
+    subprocess.run([sys.executable, script_path], check=True)
 
 with DAG(
     dag_id="etl_spark_transform",

@@ -17,6 +17,7 @@ check_and_install() {
 }
 
 echo "🔍 Checking required system packages..."
+check_and_install psycopg2 "psycopg2"
 check_and_install curl "curl"
 check_and_install lsof "lsof"
 check_and_install netstat "net-tools"   # netstat comes from net-tools
@@ -91,33 +92,33 @@ fi
 print_section "Migrating Airflow DB"
 airflow db migrate
 
-# Start services
-# --- START WEBSERVER ---
-print_section "Starting Airflow Webserver"
-nohup airflow webserver --port $AIRFLOW_PORT > "$WEB_LOG" 2>&1 &
+# # Start services
+# # --- START WEBSERVER ---
+# print_section "Starting Airflow Webserver"
+# nohup airflow webserver --port $AIRFLOW_PORT > "$WEB_LOG" 2>&1 &
 
-MAX_WAIT=200
-ELAPSED=0
-until netstat -tuln | grep ":$AIRFLOW_PORT" > /dev/null; do
-    sleep 1
-    ELAPSED=$((ELAPSED+1))
-    if [ $ELAPSED -ge $MAX_WAIT ]; then
-        echo "❌ Timeout: Webserver failed to start within $MAX_WAIT seconds"
-        exit 1
-    fi
-done
+# MAX_WAIT=200
+# ELAPSED=0
+# until netstat -tuln | grep ":$AIRFLOW_PORT" > /dev/null; do
+#     sleep 1
+#     ELAPSED=$((ELAPSED+1))
+#     if [ $ELAPSED -ge $MAX_WAIT ]; then
+#         echo "❌ Timeout: Webserver failed to start within $MAX_WAIT seconds"
+#         exit 1
+#     fi
+# done
 
-echo "✅ Webserver is now live on port $AIRFLOW_PORT (started in ${ELAPSED}s)"
+# echo "✅ Webserver is now live on port $AIRFLOW_PORT (started in ${ELAPSED}s)"
 
-print_section "Starting Airflow Scheduler"
-airflow scheduler
+# print_section "Starting Airflow Scheduler"
+# airflow scheduler
 
-# --- START SCHEDULER ---
-print_section "Starting Airflow Scheduler"
-airflow scheduler
+# # --- START SCHEDULER ---
+# print_section "Starting Airflow Scheduler"
+# airflow scheduler
 
-# --- OPTIONAL: Open in browser (only on WSL) ---
-if grep -qEi "(Microsoft|WSL)" /proc/version &>/dev/null; then
-  echo "🌐 Opening Airflow UI at http://localhost:$AIRFLOW_PORT"
-  explorer.exe "http://localhost:$AIRFLOW_PORT"
-fi
+# # --- OPTIONAL: Open in browser (only on WSL) ---
+# if grep -qEi "(Microsoft|WSL)" /proc/version &>/dev/null; then
+#   echo "🌐 Opening Airflow UI at http://localhost:$AIRFLOW_PORT"
+#   explorer.exe "http://localhost:$AIRFLOW_PORT"
+# fi
