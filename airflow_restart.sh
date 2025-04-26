@@ -32,6 +32,7 @@ SCHEDULER_PORT=8793
 
 # current directory
 AIRFLOW_DIR="$(cd "$(dirname "$0")" && pwd)"
+export DAG_DIR="${AIRFLOW_DIR}/dags"
 export LOG_DIR="${AIRFLOW_DIR}/airflow/logs"
 WEB_LOG="$LOG_DIR/webserver.log"
 
@@ -41,6 +42,7 @@ print_section() {
 }
 
 echo "Airflow directory = $AIRFLOW_DIR"
+echo "DAG folder directory = $DAG_DIR"
 echo "🚀 Restarting Airflow environment safely..."
 
 # Activate virtualenv

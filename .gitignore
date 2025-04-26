@@ -1,28 +1,25 @@
-# .gitignore
-
-# Virtual environment
-airflow_env/
-venv/
-
-# Airflow logs and DB
+# Ignore Airflow local files
 airflow/
-airflow/logs/
-airflow/airflow.db
-airflow/unittests.cfg
-logs/webserver.log
-
+airflow_env/
+logs/
 *.db
 *.log
-logs/
+
+# Ignore Python cache
+__pycache__/
+*.pyc
+
+# Ignore local env files
 .env
+.env.*
 
-# Jupyter/IPython checkpoints
-**/.ipynb_checkpoints/
+# Ignore Jupyter Notebook checkpoints
+.ipynb_checkpoints/
 
-# OS-specific files
+# Ignore OS files
 .DS_Store
 Thumbs.db
 
-# Environment file (optional, only if secrets inside)
-.env
-
+# Ignore virtual environments
+venv/
+.airflow_env/
