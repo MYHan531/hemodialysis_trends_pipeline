@@ -1,7 +1,7 @@
 from airflow import DAG
 from airflow.models import Variable
 from airflow.operators.python import PythonOperator
-from datetime import datetime
+from datetime import datetime, timedelta
 import subprocess
 import os
 import logging
@@ -10,7 +10,8 @@ import sys
 default_args = {
     "owner": "airflow",
     "start_date": datetime(2024, 1, 1),
-    "retries": 1,
+    "retries": 2,
+    "retry_delay": timedelta(minutes=5),
 }
 
 def run_etl_script():
@@ -29,12 +30,16 @@ def run_etl_script():
 
 with DAG(
     dag_id="etl_spark_transform",
+    description="An ETL pipeline that transforms dialysis data using Spark and loads into PostgreSQL.",
     default_args=default_args,
-    schedule_interval="@daily",
+    schedule_interval="@weekly",
     catchup=False,
     tags=["etl", "spark", "postgres"],
+    max_active_runs=1,
 ) as dag:
     run_etl = PythonOperator(
         task_id="run_etl_spark_transform",
-        python_callable=run_etl_script
+        python_callable=run_etl_script,
+        execution_timeout=timedelta(minutes=10),
+        retry_exponential_backoff=True,
     )

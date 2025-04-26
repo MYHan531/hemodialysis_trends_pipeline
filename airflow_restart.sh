@@ -64,7 +64,7 @@ else
   echo "⚠️ .env not found. Continuing without it..."
 fi
 
-# Kill any processes on used ports incase if it has been already used
+# --- Kill any processes on used ports incase if it has been already used ---
 print_section "Freeing up Airflow ports"
 for PORT in $AIRFLOW_PORT $SCHEDULER_PORT; do
     PIDS=$(lsof -ti :$PORT)
@@ -76,7 +76,7 @@ for PORT in $AIRFLOW_PORT $SCHEDULER_PORT; do
     fi
 done
 
-# Ensure log directory exists
+# --- Ensures log directory exists ---
 print_section "Ensuring log directory"
 LOG_DIR="${AIRFLOW_HOME}/logs"
 if command -v mkdir >/dev/null 2>&1; then
@@ -88,7 +88,7 @@ else
   exit 1
 fi
 
-# DB MIGRATE (Safeguard)
+# --- DB MIGRATE ---
 print_section "Migrating Airflow DB"
 airflow db migrate
 

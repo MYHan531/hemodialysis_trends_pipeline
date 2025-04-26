@@ -5,11 +5,16 @@ airflow_env/
 venv/
 
 # Airflow logs and DB
-airflow
+airflow/
 airflow/logs/
 airflow/airflow.db
 airflow/unittests.cfg
 logs/webserver.log
+
+*.db
+*.log
+logs/
+.env
 
 # Jupyter/IPython checkpoints
 **/.ipynb_checkpoints/

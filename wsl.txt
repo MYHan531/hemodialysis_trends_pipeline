@@ -52,3 +52,12 @@ airflow webserver --port 8080 & airflow scheduler & wait
 or 
 
 airflow standalone (requires Airflow v2.x & if you are using SQLite)
+
+Once you're inside the Airflow dashboard:
+Top menu ➔ Click Admin ➔ Click Variables.
+Click "Create" button (usually a blue button at the top-right).
+
+Fill the form:
+Key: PROJECT_DIR
+Value: /mnt/c/Users/<username>/hemodialysis_trends_pipeline
+Click Save.
