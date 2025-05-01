@@ -1,4 +1,4 @@
-# def install_if_missing(package, import_name=None):
+# def install_if_missing(package, import_name=None): # Commented out to speed up airflow DAG
 #     try:
 #         __import__(import_name or package)
 #     except ImportError:
@@ -51,7 +51,7 @@ DB_TABLE = "dialysis_cleaned"
 
 # Resolve paths
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-RAW_DATA_PATH = os.path.join(BASE_DIR, "../data/raw/kidney_disease2.csv")
+RAW_DATA_PATH = os.path.join(BASE_DIR, "../data/raw/kidney_disease_synthetic.csv")
 TMP_OUTPUT_DIR = os.path.join(BASE_DIR, "../data/clean/tmp_csv")
 FINAL_CSV_PATH = os.path.join(BASE_DIR, "../data/clean/kidney_disease_cleaned.csv")
 
