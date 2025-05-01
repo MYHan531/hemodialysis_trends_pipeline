@@ -5,6 +5,7 @@ logs/
 *.db
 *.log
 *.cfg
+wsl.txt
 
 # Ignore Python cache
 __pycache__/
