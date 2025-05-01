@@ -7,7 +7,7 @@ from faker import Faker
 fake = Faker()
 
 # Load original dataset(act as template)
-template_path = "../data/raw/kidney_disease2.csv" 
+template_path = "../data/raw/kidney_disease.csv" 
 original = pd.read_csv(template_path)
 
 # Number of rows to generate
